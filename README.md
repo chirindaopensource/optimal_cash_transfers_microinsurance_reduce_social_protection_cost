@@ -1,6 +1,6 @@
 # **`README.md`**
 
-# **Optimal Social Protection: A Production-Grade Implementation**
+# **Optimal Social Protection: An Implementation**
 
 <!-- PROJECT SHIELDS -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
