@@ -260,7 +260,7 @@ If you use this code or the methodology in your research, please cite the origin
 
 For the implementation itself, you may cite this repository:
 ```
-Chirinda, C. (2025). A Production-Grade Implementation of "Optimal Cash Transfers and Microinsurance to Reduce Social Protection Costs".
+Chirinda, C. (2025). An Implementation of "Optimal Cash Transfers and Microinsurance to Reduce Social Protection Costs".
 GitHub repository: https://github.com/chirindaopensource/optimal_cash_transfers_microinsurance_reduce_social_protection_cost
 ```
 
