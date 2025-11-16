@@ -1,0 +1,146 @@
+# ==============================================================================
+# Requirements File for Optimal Social Protection Policy Framework
+# ==============================================================================
+#
+# Project: Optimal Cash Transfers and Microinsurance to Reduce Social 
+#          Protection Costs
+#
+# Paper: Azcue, P., Constantinescu, C., Flores-Contró, J. M., & Muler, N. (2025).
+#        Optimal Cash Transfers and Microinsurance to Reduce Social Protection Costs.
+#        arXiv preprint arXiv:2511.07431.
+#        https://arxiv.org/abs/2511.07431
+#
+# Author: CS Chirinda
+# License: MIT
+# Version: 1.0.0
+# Python Version: >=3.8,<4.0
+#
+# ==============================================================================
+# CRITICAL DEPENDENCIES
+# ==============================================================================
+# These packages are essential for the core mathematical, numerical, and
+# visualization capabilities required by the PDMP-based stochastic optimal
+# control framework.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Numerical Computing Core
+# ------------------------------------------------------------------------------
+# NumPy: Foundation for array operations, random number generation, linear
+#        algebra, and vectorized mathematical operations required for Monte
+#        Carlo simulation, capital dynamics evolution, and numerical integration.
+numpy>=1.24.0,<2.0.0
+
+# ------------------------------------------------------------------------------
+# Scientific Computing and Optimization
+# ------------------------------------------------------------------------------
+# SciPy: Provides critical functionality including:
+#   - scipy.optimize: Brent's method (minimize_scalar) for finding optimal y*
+#   - scipy.special: Gaussian hypergeometric function (hyp2f1), beta function
+#                     required for analytical closed-form solutions
+#   - scipy.stats: Statistical distributions and linear regression for diagnostics
+#   - scipy.integrate: Adaptive quadrature for insurance premium calculations
+scipy>=1.11.0,<2.0.0
+
+# ------------------------------------------------------------------------------
+# Data Visualization
+# ------------------------------------------------------------------------------
+# Matplotlib: Professional-grade plotting library for generating:
+#   - Cost function visualizations (V(x) vs x)
+#   - Optimal policy surfaces (y* as function of parameters)
+#   - Monte Carlo trajectory plots
+#   - Convergence diagnostics and sensitivity analysis charts
+matplotlib>=3.8.0,<4.0.0
+
+# ==============================================================================
+# OPTIONAL DEPENDENCIES (Recommended for Production Deployment)
+# ==============================================================================
+# Uncomment the following sections based on deployment requirements
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Performance Optimization (Recommended)
+# ------------------------------------------------------------------------------
+# numba>=0.58.0,<1.0.0           # JIT compilation for Monte Carlo loops
+# numexpr>=2.8.0,<3.0.0          # Fast numerical expression evaluation
+
+# ------------------------------------------------------------------------------
+# Enhanced Data Handling (For Extended Analysis)
+# ------------------------------------------------------------------------------
+# pandas>=2.1.0,<3.0.0           # DataFrames for parameter sweeps and results
+# openpyxl>=3.1.0,<4.0.0         # Excel file I/O for policymaker reports
+
+# ------------------------------------------------------------------------------
+# Advanced Visualization (For Publication-Quality Figures)
+# ------------------------------------------------------------------------------
+# seaborn>=0.13.0,<1.0.0         # Statistical data visualization
+# plotly>=5.17.0,<6.0.0          # Interactive plots for web dashboards
+
+# ------------------------------------------------------------------------------
+# Code Quality and Testing (Development Environment)
+# ------------------------------------------------------------------------------
+# pytest>=7.4.0,<8.0.0           # Unit testing framework
+# pytest-cov>=4.1.0,<5.0.0       # Coverage reporting
+# black>=23.10.0,<24.0.0         # Code formatting (PEP-8)
+# mypy>=1.6.0,<2.0.0             # Static type checking
+# flake8>=6.1.0,<7.0.0           # Linting
+# isort>=5.12.0,<6.0.0           # Import sorting
+
+# ------------------------------------------------------------------------------
+# Documentation Generation (For Technical Reports)
+# ------------------------------------------------------------------------------
+# sphinx>=7.2.0,<8.0.0           # Documentation generation
+# sphinx-rtd-theme>=1.3.0,<2.0.0 # ReadTheDocs theme
+# numpydoc>=1.6.0,<2.0.0         # NumPy-style docstring support
+
+# ==============================================================================
+# INSTALLATION INSTRUCTIONS
+# ==============================================================================
+#
+# Standard Installation (Core Dependencies Only):
+#   pip install -r requirements.txt
+#
+# Development Installation (with optional dependencies):
+#   1. Uncomment desired optional sections above
+#   2. pip install -r requirements.txt
+#
+# Virtual Environment Setup (Recommended):
+#   python -m venv venv
+#   source venv/bin/activate  # On Windows: venv\Scripts\activate
+#   pip install --upgrade pip
+#   pip install -r requirements.txt
+#
+# Verification:
+#   python -c "import numpy; import scipy; import matplotlib; print('Success!')"
+#
+# ==============================================================================
+# COMPATIBILITY NOTES
+# ==============================================================================
+#
+# Python Version: Requires Python >=3.8 for:
+#   - Full typing module support (Literal, Protocol, TypedDict)
+#   - Dataclass functionality with field() defaults
+#   - Walrus operator (:=) for optimized loops
+#   - f-string debugging (f"{var=}")
+#
+# Operating Systems: Cross-platform compatible
+#   - Linux (Ubuntu 20.04+, RHEL 8+, Debian 11+)
+#   - macOS (10.15+)
+#   - Windows (10+, Windows Server 2019+)
+#
+# Architecture: Supports x86_64, ARM64 (Apple Silicon tested)
+#
+# Known Issues:
+#   - SciPy's hyp2f1 may issue warnings for extreme parameter values.
+#     This is expected behavior and handled by the implementation.
+#   - Matplotlib backend may require configuration in headless environments.
+#     Set: export MPLBACKEND=Agg (Linux/macOS) or set MPLBACKEND=Agg (Windows)
+#
+# ==============================================================================
+# REPRODUCIBILITY HASH
+# ==============================================================================
+# For exact reproducibility, generate a lock file:
+#   pip freeze > requirements.lock
+#
+# This captures exact versions of all transitive dependencies.
+# ==============================================================================
