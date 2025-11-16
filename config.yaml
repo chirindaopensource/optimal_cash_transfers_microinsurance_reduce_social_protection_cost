@@ -1,0 +1,183 @@
+﻿# ==============================================================================
+# FUSED HIGH-FIDELITY CONFIGURATION FOR THE COMPLETE STUDY
+# ==============================================================================
+# This YAML file represents the complete set of parameters required to reproduce
+# the study's findings with perfect fidelity. It is designed to be parsed by
+# the `run_complete_study` orchestrator.
+# ==============================================================================
+
+# --------------------------------------------------------------------------
+# A. STUDY METADATA AND DESCRIPTIVE PARAMETERS
+# --------------------------------------------------------------------------
+study_metadata:
+  study_name: "Optimal Cash Transfers and Microinsurance to Reduce Social Protection Costs"
+  scenario_id: "Figure7a_Proportional_eta_0.80_gamma_0.50"
+  description: "Configuration for proportional microinsurance (η=0.80, γ=0.50) with Beta(α,1) losses."
+  version: 2.0
+
+# --------------------------------------------------------------------------
+# B. MODEL PARAMETERS
+# --------------------------------------------------------------------------
+model_parameters:
+  household_economic_parameters:
+    poverty_line_x_star: 20.0
+    primitive_params_for_r:
+      marginal_propensity_consume_a: 0.10
+      income_generation_rate_b: 3.0
+      savings_conversion_rate_c: 0.40
+    derived_growth_rate_r: 1.08
+
+  stochastic_shock_parameters:
+    shock_frequency_lambda: 1.0
+    loss_distribution_G_Z:
+      name: "Beta"
+      parameters:
+        alpha: 1.25
+        beta: 1.0
+      mean_E_Z_mu: 0.5555555556
+
+  social_planner_parameters:
+    discount_rate_delta: 0.10
+
+  microinsurance_parameters:
+    is_active: true
+    insurance_type: "Proportional"
+    policy_parameters:
+      proportional_retention_eta: 0.80
+      xl_retention_l: null
+      total_loss_L: null
+    insurer_safety_loading_gamma: 0.50
+    derived_premium_p_R: 0.1333333333
+    feasible_b_gt_pR: true
+    transformed_poverty_line_x_star_R: 20.9302325581
+    transformed_growth_rate_r_R: 1.032
+    post_insurance_law_W_specification:
+      mapping_h_z: "h(z) = 1 - eta * (1 - z)"
+      inverse_h_inv_w: "h^{-1}(w) = (w + eta - 1)/eta for w in [1-eta, 1]"
+      cdf_G_W_R_piecewise: "G_W^R(w) = 0 for w < 1-eta; G_Z(h^{-1}(w)) for w in [1-eta, 1]"
+      mean_E_W: 0.6444444444
+
+# --------------------------------------------------------------------------
+# C. DATA PRE-PROCESSING PARAMETERS (FOR DOCUMENTATION)
+# --------------------------------------------------------------------------
+data_preprocessing_parameters:
+  derived_parameter_calculation_steps:
+    - "1. Compute r = (1-a)*b*c from primitive_params_for_r (Section 2)."
+    - "2. Compute mu = E[Z] from loss_distribution_G_Z (used in Proposition 2.2 and D(x))."
+    - "3. If microinsurance.is_active:"
+    - "   3.1. Compute premium p_R via Eq. (7.1); proportional case via Eq. (7.8)."
+    - "   3.2. Enforce feasibility: assert b > p_R, else abort or disable insurance."
+    - "   3.3. Compute transformed x_star_R = (b/(b - p_R))*x_star (Eq. (7.2))."
+    - "   3.4. Compute transformed r_R = r * (b - p_R)/b (Eq. (7.3))."
+    - "   3.5. Define W = 1 - R(1 - Z); proportional mapping via Eqs. (7.9)–(7.11)."
+    - "4. Compute the policy comparator boundary (Proposition 2.2): check if b >= delta + lambda * (1 - mu)."
+    - "5. Select computation method: use closed forms (Section 5) only if Z ~ Beta(alpha,1) and microinsurance.is_active=False; otherwise use Monte Carlo or fixed-point."
+  policy_comparator_boundary:
+    boundary_value_b_minus_delta_minus_lambda_one_minus_mu: 2.5555555556
+    lump_sum_preferred_at_x_star: true
+
+# --------------------------------------------------------------------------
+# D. COMPUTATIONAL METHODOLOGY PARAMETERS
+# --------------------------------------------------------------------------
+computation_parameters:
+  method_selection:
+    algorithm_to_use: "MonteCarlo"
+    auto_mode_rule: "Use ClosedForm only if Beta(alpha,1) and no insurance; else MonteCarlo."
+    value_objective:
+      optimize_threshold_objective: "minimize_Vy_at_threshold"
+      initial_capital_for_objective_x0: null
+      x0_distribution_for_objective: null
+    threshold_search_bracket:
+      y_min_definition: "active_poverty_line"
+      y_max_factor_times_y_min: 4.0
+
+  monte_carlo_settings:
+    num_simulation_paths_N: 500000
+    num_batches_for_CI: 20
+    random_seed: 20241030
+    simulation_time_horizon_T: 100.0
+    first_passage_truncation_policy: "treat_as_infinite_zero_contribution"
+    report_truncation_fraction: true
+    confidence_interval_level: 0.99
+
+  fixed_point_solver_settings:
+    use_fixed_point: false
+    tolerance_supnorm_epsilon: 1.0e-6
+    max_iterations_K: 1000
+    quadrature_method_for_expectations: "adaptive_gauss_kronrod"
+
+  closed_form_settings:
+    enabled_when_applicable: true
+    special_functions_backend: "scipy.special.hyp2f1"
+    relative_tolerance: 1.0e-10
+    absolute_tolerance: 1.0e-12
+
+  optimizer_settings:
+    optimizer_algorithm: "Brent"
+    y_tolerance_xtol: 1.0e-3
+    f_tolerance_ftol: 1.0e-6
+    max_iterations: 200
+
+  verification_diagnostics:
+    check_tail_limits: true
+    check_HJB_residuals: false
+    finite_difference_step_for_Vprime: 1.0e-3
+    # Added flags to control robustness checks from the master orchestrator
+    run_convergence_diagnostics: false
+    run_final_validation: false
+
+# --------------------------------------------------------------------------
+# E. & F. ML/AI PARAMETERS (NOT APPLICABLE)
+# --------------------------------------------------------------------------
+machine_learning_parameters:
+  note: "No machine learning or neural networks are used in the study."
+  network_architecture_parameters: null
+  network_training_parameters:
+    is_applicable: false
+
+llm_and_generative_ai_parameters:
+  note: "No LLMs or generative AI are used in the core methodology."
+  llm_name: null
+
+# --------------------------------------------------------------------------
+# G. OUTPUT AND VISUALIZATION PARAMETERS
+# --------------------------------------------------------------------------
+output_parameters:
+  capital_grid_for_plots:
+    start_value: 0.0
+    stop_value: 100.0
+    num_points: 201
+  series_to_plot:
+    - "V_y_star_x_optimal_threshold"
+    - "C_x_inject_to_poverty_line"
+    - "D_x_perpetual_transfers"
+    - "V_y_x_at_y_equals_40"
+  # Added flag to control insurance impact analysis
+  run_insurance_impact_analysis: false
+
+# --------------------------------------------------------------------------
+# H. METHODOLOGICAL NOTES (FOR DOCUMENTATION)
+# --------------------------------------------------------------------------
+methodological_notes:
+  validation_critical_step: "Validate the Monte Carlo engine (Section 6) against the closed forms (Section 5) for Z~Beta(alpha,1) without insurance; results must converge as N increases."
+  key_tradeoff: "num_simulation_paths_N trades computational time for accuracy/stability, especially for the optimization of y*."
+  implementation_warning: "Closed-form evaluation requires a robust special-functions library for {}_2F_1; naive implementations will fail."
+  equation_reference_corrections: "Proportional premium uses Eq. (7.8); proportional mapping uses Eqs. (7.9)–(7.11); do not cite 'Eq. 7.5' for proportional coverage."
+
+# --------------------------------------------------------------------------
+# I. MASTER ORCHESTRATOR RUN CONTROL
+# --------------------------------------------------------------------------
+analysis_stages:
+  run_main_analysis: true
+  run_convergence_diagnostics: true
+  run_insurance_impact_analysis: true
+  run_parameter_sweeps:
+    - sweep_name: "delta_sensitivity_analysis"
+      sweep_params:
+        model_parameters.social_planner_parameters.discount_rate_delta: [0.1, 0.2, 0.3, 0.4, 0.5]
+    - sweep_name: "eta_sensitivity_analysis"
+      sweep_params:
+        model_parameters.microinsurance_parameters.policy_parameters.proportional_retention_eta: [0.6, 0.7, 0.8, 0.9, 1.0]
+  generate_plots: true
+  run_final_validation: true
+  generate_manifest: true
